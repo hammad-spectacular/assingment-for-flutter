@@ -1,0 +1,1 @@
+Paste your image file (e.g. profile.png) into this assets/ directory.
