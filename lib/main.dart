@@ -121,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 // -----------------------------------------------------------------------------
-// 2. SIGN IN SCREEN (Pretend authentication illusion)
+// 2. SIGN IN SCREEN (With Password Toggle, Dynamic Button & Credentials Card)
 // -----------------------------------------------------------------------------
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -134,13 +134,31 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_updateState);
+    _passwordController.addListener(_updateState);
+  }
+
+  void _updateState() {
+    setState(() {});
+  }
 
   @override
   void dispose() {
+    _emailController.removeListener(_updateState);
+    _passwordController.removeListener(_updateState);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
+
+  bool get _isFormValid =>
+      _emailController.text.trim().isNotEmpty &&
+      _passwordController.text.trim().isNotEmpty;
 
   void _handleSignIn() {
     final email = _emailController.text.trim();
@@ -186,123 +204,201 @@ class _SignInScreenState extends State<SignInScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Card(
-              color: const Color(0xFF535353),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircleAvatar(
-                      radius: 36,
-                      backgroundColor: Colors.deepPurple,
-                      child: Icon(Icons.lock, size: 40, color: Colors.white),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Welcome Back',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Sign in to your account',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                    const SizedBox(height: 24),
-                    TextField(
-                      controller: _emailController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Email Address',
-                        labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.email, color: Colors.white70),
-                        filled: true,
-                        fillColor: Colors.black26,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Column(
+              children: [
+                Card(
+                  color: const Color(0xFF535353),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircleAvatar(
+                          radius: 36,
+                          backgroundColor: Colors.deepPurple,
+                          child: Icon(Icons.lock, size: 40, color: Colors.white),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
-                        filled: true,
-                        fillColor: Colors.black26,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Welcome Back',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    _isLoading
-                        ? const CircularProgressIndicator(color: Colors.deepPurpleAccent)
-                        : Shrink(
-                            onTap: _handleSignIn,
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: FilledButton(
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: Colors.deepPurple,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Sign in to your account',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 24),
+                        TextField(
+                          controller: _emailController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Email Address',
+                            labelStyle: const TextStyle(color: Colors.white70),
+                            prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                            filled: true,
+                            fillColor: Colors.black26,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: const TextStyle(color: Colors.white70),
+                            prefixIcon: const Icon(Icons.lock_outline, color: Colors.white70),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.white70,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
+                            filled: true,
+                            fillColor: Colors.black26,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        _isLoading
+                            ? const CircularProgressIndicator(color: Colors.deepPurpleAccent)
+                            : Shrink(
+                                onTap: _handleSignIn,
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: FilledButton(
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: _isFormValid
+                                            ? Colors.deepPurple
+                                            : Colors.deepPurple.shade300,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      onPressed: null,
+                                      child: Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: _isFormValid ? Colors.white : Colors.white70,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                onPressed: null,
-                                child: const Text(
-                                  'Sign In',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                        const SizedBox(height: 16),
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const Text(
+                              "Don't have an account? ",
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                                );
+                              },
+                              child: const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  color: Colors.deepPurpleAccent,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          ),
-                    const SizedBox(height: 16),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        const Text(
-                          "Don't have an account? ",
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                            );
-                          },
-                          child: const Text(
-                            'Sign Up',
-                            style: TextStyle(
-                              color: Colors.deepPurpleAccent,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 20),
+
+                // STUDENT CREDENTIALS INFO CARD ON SIGN IN PAGE
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple.shade900,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.deepPurpleAccent.shade100, width: 1),
+                  ),
+                  child: Column(
+                    children: const [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.badge, color: Colors.white, size: 20),
+                          SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              'Student Registration Credentials',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Name: Muhammad Hammad Qayyum',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Student ID: 27931',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Email: 27931@students.riphah.edu.pk',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Campus: Riphah International University, Islamabad',
+                        style: TextStyle(color: Colors.white54, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -312,7 +408,7 @@ class _SignInScreenState extends State<SignInScreen> {
 }
 
 // -----------------------------------------------------------------------------
-// 3. SIGN UP SCREEN (With Student ID & Email at the Bottom)
+// 3. SIGN UP SCREEN (With Password Toggle & Dynamic Button)
 // -----------------------------------------------------------------------------
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -327,15 +423,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_updateState);
+    _emailController.addListener(_updateState);
+    _passwordController.addListener(_updateState);
+    _confirmPasswordController.addListener(_updateState);
+  }
+
+  void _updateState() {
+    setState(() {});
+  }
 
   @override
   void dispose() {
+    _nameController.removeListener(_updateState);
+    _emailController.removeListener(_updateState);
+    _passwordController.removeListener(_updateState);
+    _confirmPasswordController.removeListener(_updateState);
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
+
+  bool get _isFormValid =>
+      _nameController.text.trim().isNotEmpty &&
+      _emailController.text.trim().isNotEmpty &&
+      _passwordController.text.trim().isNotEmpty &&
+      _confirmPasswordController.text.trim().isNotEmpty;
 
   void _handleSignUp() {
     final name = _nameController.text.trim();
@@ -462,12 +583,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: 12),
                         TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: _obscurePassword,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Password',
                             labelStyle: const TextStyle(color: Colors.white70),
                             prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.white70,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
                             filled: true,
                             fillColor: Colors.black26,
                             border: OutlineInputBorder(
@@ -478,12 +610,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: 12),
                         TextField(
                           controller: _confirmPasswordController,
-                          obscureText: true,
+                          obscureText: _obscureConfirmPassword,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Confirm Password',
                             labelStyle: const TextStyle(color: Colors.white70),
                             prefixIcon: const Icon(Icons.lock_reset, color: Colors.white70),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureConfirmPassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Colors.white70,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                                });
+                              },
+                            ),
                             filled: true,
                             fillColor: Colors.black26,
                             border: OutlineInputBorder(
@@ -499,17 +644,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: SizedBox(
                                   width: double.infinity,
                                   height: 50,
-                                  child: FilledButton(
-                                    style: FilledButton.styleFrom(
-                                      backgroundColor: Colors.deepPurple,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    child: FilledButton(
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: _isFormValid
+                                            ? Colors.deepPurple
+                                            : Colors.deepPurple.shade300,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
                                       ),
-                                    ),
-                                    onPressed: null,
-                                    child: const Text(
-                                      'Sign Up',
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                      onPressed: null,
+                                      child: Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: _isFormValid ? Colors.white : Colors.white70,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -561,7 +715,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              'Student Registration Info',
+                              'Student Registration Credentials',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,

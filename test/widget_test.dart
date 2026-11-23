@@ -22,13 +22,14 @@ void main() {
 
     // Verify transition to SignInScreen
     expect(find.text('Welcome Back'), findsOneWidget);
+    expect(find.text('Student Registration Credentials'), findsOneWidget);
 
     // Navigate to SignUpScreen
     await tester.tap(find.text('Sign Up'), warnIfMissed: false);
     await tester.pumpAndSettle();
 
     // Verify SignUpScreen student info at bottom
-    expect(find.text('Student Registration Info'), findsOneWidget);
+    expect(find.text('Student Registration Credentials'), findsOneWidget);
     expect(find.text('Name: Muhammad Hammad Qayyum'), findsOneWidget);
     expect(find.text('Student ID: 27931'), findsOneWidget);
     expect(find.text('Email: 27931@students.riphah.edu.pk'), findsOneWidget);
