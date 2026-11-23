@@ -848,6 +848,20 @@ class AppDrawer extends StatelessWidget {
               }
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.layers),
+            title: const Text('Nested Layout'),
+            selected: currentScreenIndex == 3,
+            onTap: () {
+              Navigator.pop(context);
+              if (currentScreenIndex != 3) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NestedLayoutScreen()),
+                );
+              }
+            },
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -912,6 +926,11 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         MaterialPageRoute(builder: (context) => const AboutScreen()),
       );
+    } else if (index == 3) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NestedLayoutScreen()),
+      );
     }
   }
 
@@ -971,7 +990,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Explore the List Screen for scrollable lists and the About Screen for grid gallery views.',
+                    'Explore the List Screen for scrollable lists, About Screen for grid views, and Nested Layout for custom widget architecture.',
                     style: TextStyle(fontSize: 14, color: Colors.white70),
                   ),
                   const SizedBox(height: 24),
@@ -1049,6 +1068,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF5E5E5E),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white60,
+        type: BottomNavigationBarType.fixed,
         onTap: _onBottomNavTapped,
         items: const [
           BottomNavigationBarItem(
@@ -1062,6 +1082,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
             label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: 'Layout',
           ),
         ],
       ),
@@ -1154,6 +1178,7 @@ class _ListScreenState extends State<ListScreen> {
         backgroundColor: const Color(0xFF5E5E5E),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white60,
+        type: BottomNavigationBarType.fixed,
         onTap: (index) {
           if (index == 0) {
             Navigator.pushReplacement(
@@ -1164,6 +1189,11 @@ class _ListScreenState extends State<ListScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AboutScreen()),
+            );
+          } else if (index == 3) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const NestedLayoutScreen()),
             );
           }
         },
@@ -1179,6 +1209,10 @@ class _ListScreenState extends State<ListScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
             label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: 'Layout',
           ),
         ],
       ),
@@ -1368,6 +1402,7 @@ class _AboutScreenState extends State<AboutScreen> {
         backgroundColor: const Color(0xFF5E5E5E),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white60,
+        type: BottomNavigationBarType.fixed,
         onTap: (index) {
           if (index == 0) {
             Navigator.pushReplacement(
@@ -1378,6 +1413,11 @@ class _AboutScreenState extends State<AboutScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const ListScreen()),
+            );
+          } else if (index == 3) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const NestedLayoutScreen()),
             );
           }
         },
@@ -1393,6 +1433,303 @@ class _AboutScreenState extends State<AboutScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
             label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: 'Layout',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// 7. NESTED LAYOUT SCREEN (Uses ONLY existing widgets from the codebase)
+// -----------------------------------------------------------------------------
+class NestedLayoutScreen extends StatefulWidget {
+  const NestedLayoutScreen({super.key});
+
+  @override
+  State<NestedLayoutScreen> createState() => _NestedLayoutScreenState();
+}
+
+class _NestedLayoutScreenState extends State<NestedLayoutScreen> {
+  void _onBottomNavTapped(int index) {
+    if (index == 3) return;
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ListScreen()),
+      );
+    } else if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AboutScreen()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF6E6E6E),
+      appBar: AppBar(
+        title: const Text('Nested Layout Screen'),
+        backgroundColor: const Color(0xFF5E5E5E),
+        foregroundColor: Colors.white,
+      ),
+      drawer: const AppDrawer(currentScreenIndex: 3),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Nested Header Card
+            Card(
+              color: const Color(0xFF535353),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.deepPurple,
+                          child: Icon(Icons.layers, color: Colors.white, size: 32),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Nested Widget Architecture',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Constructed using only existing project widgets',
+                                style: TextStyle(color: Colors.white70, fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Nested UI Containers:',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Nested Container Block 1
+            Card(
+              color: const Color(0xFF535353),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Outer Container Layer',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Shrink(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Nested Layer A'),
+                                  content: const Text('Interactive nested container widget.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Column(
+                                children: [
+                                  Icon(Icons.widgets, color: Colors.white, size: 32),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Inner Box A',
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Shrink(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Nested Layer B'),
+                                  content: const Text('Interactive nested container widget.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.teal,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Column(
+                                children: [
+                                  Icon(Icons.view_quilt, color: Colors.white, size: 32),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Inner Box B',
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Nested Container Block 2
+            Card(
+              color: const Color(0xFF535353),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Nested Media & Hero Card',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              'assets/pic.png',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                color: Colors.deepPurple.shade200,
+                                child: const Icon(Icons.image, color: Colors.deepPurple),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Nested Asset Widget',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Combines ClipRRect, SizedBox, Column and Text widgets inside Row',
+                                style: TextStyle(color: Colors.white70, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 3,
+        backgroundColor: const Color(0xFF5E5E5E),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white60,
+        type: BottomNavigationBarType.fixed,
+        onTap: _onBottomNavTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_bulleted),
+            label: 'List',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: 'Layout',
           ),
         ],
       ),

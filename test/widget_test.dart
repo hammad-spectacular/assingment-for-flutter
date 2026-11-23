@@ -37,4 +37,12 @@ void main() {
     // Reset surface size after test
     addTearDown(tester.view.resetPhysicalSize);
   });
+
+  testWidgets('NestedLayoutScreen renders nested widgets correctly',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: NestedLayoutScreen()));
+    expect(find.text('Nested Layout Screen'), findsOneWidget);
+    expect(find.text('Nested Widget Architecture'), findsOneWidget);
+    expect(find.text('Outer Container Layer'), findsOneWidget);
+  });
 }
